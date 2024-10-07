@@ -7,19 +7,24 @@
     "scripts": {
         "start": "node ./dist/index.js",
         "dev": "node --loader ts-node/esm index.ts",
-        "build": "tsc"
+        "build": "tsc",
+        "postinstall": "prisma generate",
+        "format": "prettier --write ."
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@prisma/client": "5.20.0",
         "@types/node": "^22.7.4",
         "express": "^4.21.0",
+        "prettier": "^3.3.3",
         "ts-node": "^10.9.2",
         "ts-node-dev": "^2.0.0",
         "typescript": "^5.6.2"
     },
     "devDependencies": {
-        "@types/express": "^5.0.0"
+        "@types/express": "^5.0.0",
+        "prisma": "^5.20.0"
     }
 }

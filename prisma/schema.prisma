@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model Restaurant {
+  id        String   @id @default(cuid())
+  name      String
+  location  String
+  logo      String
+  menu      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Table Table[]
+}
+
+model Table {
+  id           String     @id @default(cuid())
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  number       Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  Order Order[]
+}
+
+enum OrderType {
+  PickUp
+  DineIn
+}
+
+model Order {
+  id        String    @id @default(cuid())
+  number    Int
+  type      OrderType
+  detail    String
+  status    String
+  tableId   String?
+  table     Table?    @relation(fields: [tableId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
