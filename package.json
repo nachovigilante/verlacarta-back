@@ -8,6 +8,7 @@
         "start": "node ./dist/index.js",
         "dev": "node --loader ts-node/esm index.ts",
         "build": "tsc",
+        "vercel-build": "echo building...",
         "postinstall": "prisma generate",
         "format": "prettier --write ."
     },
