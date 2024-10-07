@@ -1,0 +1,25 @@
+{
+    "name": "verlacarta-back",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./dist/index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node ./dist/index.js",
+        "dev": "node --loader ts-node/esm index.ts",
+        "build": "tsc"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@types/node": "^22.7.4",
+        "express": "^4.21.0",
+        "ts-node": "^10.9.2",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.6.2"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.0"
+    }
+}
