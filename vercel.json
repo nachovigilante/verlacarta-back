@@ -7,6 +7,7 @@
             "config": { "includeFiles": ["dist/**"] }
         }
     ],
+    "ignore": ["dist"],
     "routes": [
         {
             "src": "/(.*)",
