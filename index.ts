@@ -1,8 +1,13 @@
 import express from "express";
 import RestaurantRouter from "./routes/restaurants.router.js";
 import OrderRouter from "./routes/orders.router.js";
+import cors from "cors";
 
 const app = express();
+
+app.use(express.json());
+
+app.use(cors());
 
 app.get("/", (_, res) => {
     res.send("VerLaCarta API running...");
