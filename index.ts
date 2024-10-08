@@ -7,7 +7,16 @@ const app = express();
 
 app.use(express.json());
 
-app.use(cors());
+app.use(
+    cors({
+        // TODO: Cambiar para que en PROD solo acepte el dominio de la app
+        origin: [
+            "http://localhost:4200",
+            "https://verlacarta-front.vercel.app",
+        ],
+        credentials: true,
+    }),
+);
 
 app.get("/", (_, res) => {
     res.send("VerLaCarta API running...");
