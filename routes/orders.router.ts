@@ -9,7 +9,7 @@ router.get("/", async (_, res) => {
 
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
-    const order = await prisma.orders.findUnique({
+    const order = await prisma.order.findUnique({
       where: {
         id,
       },
