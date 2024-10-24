@@ -7,4 +7,21 @@ router.get("/", async (_, res) => {
     res.send("Orders route");
 });
 
+router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+    const order = await prisma.orders.findUnique({
+      where: {
+        id,
+      },
+    });
+  
+    if (!order) {
+      res.status(404).json({ error: "Order not found" });
+      return;
+    }
+  
+    res.json(order);
+  });
+  
+
 export default router;
