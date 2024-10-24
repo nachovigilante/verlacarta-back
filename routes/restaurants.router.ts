@@ -10,6 +10,29 @@ router.get("/", async (_, res) => {
   res.json(restaurants);
 });
 
+router.get("/:restaurantId/orders", async (req, res): Promise<void>  => {
+  const { restaurantId } = req.params;
+  try {
+    const orders = await prisma.order.findMany({
+        where: {
+            table: {
+                restaurantId: restaurantId
+            }
+        },
+        include: {
+            table: true
+        }
+    });
+
+    res.status(200).json(orders);
+    return;
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ error: 'Error fetching orders' });
+    return;
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const restaurant = await prisma.restaurant.findUnique({
