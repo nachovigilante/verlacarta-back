@@ -23,7 +23,7 @@ router.get("/:id", async (req, res) => {
     }
   
     res.json(order);
-  });
+});
   
 
 export default router;

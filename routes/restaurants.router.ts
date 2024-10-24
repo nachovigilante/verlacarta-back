@@ -124,6 +124,28 @@ router.post("/signin", async (req: Request, res: Response) => {
   }
 });
 
+router.put('/orders/:orderId/status', async (req, res):Promise<void> => {
+  const { orderId } = req.params;
+  const { status } = req.body; 
+  
+  try {
+      const updatedOrder = await prisma.order.update({
+          where: {
+              id: orderId,
+          },
+          data: {
+              status: status,
+          },
+      });
+
+     res.status(200).json(updatedOrder);
+     return;
+  } catch (error) {
+      console.error("Error updating order status:", error);
+      res.status(500).json({ error: 'Error updating order status' });
+      return;
+  }
+});
 
 
 export default router;
