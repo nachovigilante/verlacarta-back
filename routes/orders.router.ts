@@ -4,7 +4,9 @@ import { prisma } from "../db.js";
 const router = Router();
 
 router.get("/", async (_, res) => {
-    res.send("Orders route");
+    const orders = await prisma.order.findMany();
+
+    res.json(orders);
 });
 
 router.get("/:id", async (req, res) => {
