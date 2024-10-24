@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model Restaurant {
@@ -17,24 +17,17 @@ model Restaurant {
   menu      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  Table Table[]
+  Table     Table[]
 }
 
 model Table {
   id           String     @id @default(cuid())
   restaurantId String
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
   number       Int
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-
-  Order Order[]
-}
-
-enum OrderType {
-  PickUp
-  DineIn
+  Order        Order[]
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
 }
 
 model Order {
@@ -44,7 +37,12 @@ model Order {
   detail    String
   status    String
   tableId   String?
-  table     Table?    @relation(fields: [tableId], references: [id])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  table     Table?    @relation(fields: [tableId], references: [id])
+}
+
+enum OrderType {
+  PickUp
+  DineIn
 }

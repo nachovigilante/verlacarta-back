@@ -31,6 +31,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
   try {
     const {
       name,
+      password,
       location,
       menu,
       tables,
@@ -46,6 +47,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
     const createdRestaurant = await prisma.restaurant.create({
       data: {
         name,
+        password,
         location,
         logo,
         menu,
@@ -70,32 +72,33 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
 
 
 router.post("/signin", async (req: Request, res: Response) => {
-  // console.log(req); 
-  // try { 
-  //   const { name, password } = req.body;
+  console.log(req); 
+  try { 
+    const { name, password } = req.body;
 
-  //   if (!name || !password) {
-  //     res.status(400).json({ error: "Invalid input data" });
-  //     return;
-  //   }
+    if (!name || !password) {
+      res.status(400).json({ error: "Invalid input data" });
+      return;
+    }
 
-  //   const restaurant = await prisma.restaurant.findFirst({
-  //     where: { name },
-  //   });
+    const restaurant = await prisma.restaurant.findFirst({
+      where: { name },
+    });
 
-  //   if (!restaurant) {
-  //     res.status(404).json({ error: "Restaurant not found" });
-  //     return;
-  //   }
+    if (!restaurant) {
+      res.status(404).json({ error: "Restaurant not found" });
+      return;
+    }
 
-  //   res.status(200).json({ message: "Sign in correctly", restaurant: restaurant });
-  // } catch (error) {
-  //   console.error("Error details:", error); // Improved error logging
-  //   res.status(500).json({ error: "Server error" });
-  // }
-  const restaurants = await prisma.restaurant.findMany();
-
-  res.json(restaurants);
+    if (restaurant.password != password) {
+      res.status(400).json({ error: "Wrong password" });
+      return;
+    }
+    res.status(200).json({ message: "Sign in correctly", restaurant: restaurant });
+  } catch (error) {
+    console.error("Error details:", error);
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 
