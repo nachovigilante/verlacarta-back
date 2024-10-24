@@ -11,6 +11,7 @@ datasource db {
 model Restaurant {
   id        String   @id @default(cuid())
   name      String
+  password  String
   location  String
   logo      String
   menu      String
