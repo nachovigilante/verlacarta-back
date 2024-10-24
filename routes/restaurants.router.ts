@@ -69,5 +69,35 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
 });
 
 
+router.post("/signin", async (req: Request, res: Response) => {
+  // console.log(req); 
+  // try { 
+  //   const { name, password } = req.body;
+
+  //   if (!name || !password) {
+  //     res.status(400).json({ error: "Invalid input data" });
+  //     return;
+  //   }
+
+  //   const restaurant = await prisma.restaurant.findFirst({
+  //     where: { name },
+  //   });
+
+  //   if (!restaurant) {
+  //     res.status(404).json({ error: "Restaurant not found" });
+  //     return;
+  //   }
+
+  //   res.status(200).json({ message: "Sign in correctly", restaurant: restaurant });
+  // } catch (error) {
+  //   console.error("Error details:", error); // Improved error logging
+  //   res.status(500).json({ error: "Server error" });
+  // }
+  const restaurants = await prisma.restaurant.findMany();
+
+  res.json(restaurants);
+});
+
+
 
 export default router;
