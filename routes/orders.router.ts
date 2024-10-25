@@ -2,18 +2,17 @@ import { Router } from "express";
 import { prisma } from "../db.js";
 import { SentMessageInfo } from 'nodemailer';
 import { log } from "console";
+import nodemailer from 'nodemailer';
+
 
 const router = Router();
-const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: false, // true para 465, false para otros puertos
-  auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-  },
+    service: 'gmail', // Usar el servicio de Gmail
+    auth: {
+        user: process.env.EMAIL_USER, // Correo electrónico del remitente
+        pass: process.env.EMAIL_PASS, // Contraseña del remitente
+    },
 });
 
 const sendEmail = (to: string, subject: string, text: string) => {
@@ -69,7 +68,7 @@ router.put('/:orderId/status', async (req, res):Promise<void> => {
             },
         });
   
-        sendEmail("cindylevi@gmail.com", "Tu pedido ha cambiado de estado", "Tu pediiiido");
+        sendEmail(updatedOrder.email, "Tu pedido ahora esta " +  updatedOrder.status + "!", "Mesa #" + updatedOrder.number + ", tu pedido esta " + updatedOrder.status);
        res.status(200).json(updatedOrder);
        return;
     } catch (error) {
