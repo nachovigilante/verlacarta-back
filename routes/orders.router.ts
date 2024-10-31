@@ -38,11 +38,6 @@ router.get("/", async (_, res) => {
     const orders = await prisma.order.findMany({
         include: {
             table: {
-                select: {
-                    id: true,
-                    number: true,
-                    restaurantId: true,
-                },
                 include: {
                     restaurant: true,
                 },
