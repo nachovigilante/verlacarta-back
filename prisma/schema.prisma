@@ -13,6 +13,8 @@ model Restaurant {
   name      String
   password  String
   location  String
+  lat       Float    @default(0)
+  lng       Float    @default(0)
   logo      String
   menu      String
   createdAt DateTime @default(now())
