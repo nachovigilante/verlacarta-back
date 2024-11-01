@@ -28,8 +28,7 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req: Request, res: Response): Promise<void> => {
     console.log(req);
     try {
-        const { name, password, location, menu, tables, logo } = req.body;
-
+        const { name, password, location, menu, tables, logo, lat, lng } = req.body;
         if (
             !name ||
             !password ||
@@ -37,31 +36,43 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
             !logo ||
             !menu ||
             typeof tables !== "number" ||
+            typeof lat !== "number" ||
+            typeof lng !== "number" ||
             tables < 1
         ) {
-            res.status(400).json({ error: "Invalid input data" });
+            res.status(400).json({ error: "Invalid input data"});
             return;
         }
 
-        const createdRestaurant = await prisma.restaurant.create({
-            data: {
-                name,
-                password,
-                location,
-                logo,
-                menu,
-            },
+        const [createdRestaurant] = await prisma.$transaction(async (prisma) => {
+            const restaurant = await prisma.restaurant.create({
+                data: {
+                    name,
+                    password,
+                    location,
+                    logo,
+                    menu,
+                    lat: lat, 
+                    lng: lng, 
+                },
+            });
+
+            const tableData = Array.from({ length: tables }, (_, index) => ({
+                number: index + 1,
+                restaurantId: restaurant.id,
+            }));
+
+            await prisma.table.createMany({
+                data: tableData,
+            });
+
+            const createdTables = await prisma.table.findMany({
+                where: { restaurantId: restaurant.id },
+            });
+            
+
+            return [restaurant];
         });
-
-        const tableData = Array.from({ length: tables }, (_, index) => ({
-            number: index + 1,
-            restaurantId: createdRestaurant.id,
-        }));
-
-        await prisma.table.createMany({
-            data: tableData,
-        });
-
         res.status(201).json({
             message: "Restaurant and tables created successfully",
             restaurant: createdRestaurant,
