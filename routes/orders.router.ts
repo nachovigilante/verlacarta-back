@@ -34,6 +34,31 @@ const sendEmail = (to: string, subject: string, text: string) => {
     );
 };
 
+router.get("/restaurant/:restaurantId", async (req, res) => {
+    const { restaurantId } = req.params;
+    try {
+        const orders = await prisma.order.findMany({
+            where: {
+                table: {
+                    restaurantId: restaurantId, 
+                },
+            },
+            include: {
+                table: {
+                    include: {
+                        restaurant: true,
+                    },
+                },
+            },
+        });
+
+        res.json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "An error occurred while fetching orders." });
+    }
+});
+
 router.get("/", async (_, res) => {
     const orders = await prisma.order.findMany({
         include: {
