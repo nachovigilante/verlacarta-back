@@ -6,7 +6,6 @@ const router = Router();
 
 router.get("/", async (_, res) => {
     const restaurants = await prisma.restaurant.findMany();
-
     res.json(restaurants);
 });
 
@@ -33,6 +32,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
 
         if (
             !name ||
+            !password ||
             !location ||
             !logo ||
             !menu ||
