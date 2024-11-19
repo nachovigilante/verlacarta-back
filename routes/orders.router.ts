@@ -119,4 +119,44 @@ router.put("/:orderId/status", async (req, res): Promise<void> => {
         return;
     }
 });
+
+router.post("/", async (req, res) => {
+    const { number, type, detail, tableId, email } = req.body;
+
+    console.log(req.body)
+
+    if(!type || !detail || !tableId || !email ){
+        res.status(400).json({ error: "Some required parameters are missing" });
+        return;
+    }
+    if (type !== "PickUp" && type !== "DineIn") {
+        res.status(400).json({ error: "Wrong order type" });
+        return;
+    }
+
+    try {
+        const order = await prisma.order.create({
+            data: {
+                number,
+                type,
+                detail,
+                status: "Pendiente",
+                table: {
+                    connect: {
+                        id: tableId,
+                    },
+                },
+                email,
+            },
+        });
+
+        res.json(order);
+    } catch (error) {
+        console.error("Error creating order: ", error);
+        res.status(500).json({ error: "Error creating order" });
+        return;
+    }
+});
+
+
 export default router;
