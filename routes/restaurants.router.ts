@@ -4,7 +4,11 @@ import { prisma } from "../db.js";
 const router = Router();
 
 router.get("/", async (_, res) => {
-    const restaurants = await prisma.restaurant.findMany();
+    const restaurants = await prisma.restaurant.findMany({
+        include: {
+            Table: true,
+        },
+    });
     res.json(restaurants);
 });
 
