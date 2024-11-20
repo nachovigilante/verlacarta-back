@@ -39,9 +39,7 @@ router.get("/restaurant/:restaurantId", async (req, res) => {
     try {
         const orders = await prisma.order.findMany({
             where: {
-                table: {
-                    restaurantId: restaurantId,
-                },
+                restaurantId: restaurantId,
             },
             include: {
                 table: true,
@@ -61,11 +59,8 @@ router.get("/restaurant/:restaurantId", async (req, res) => {
 router.get("/", async (_, res) => {
     const orders = await prisma.order.findMany({
         include: {
-            table: {
-                include: {
-                    restaurant: true,
-                },
-            },
+            table: true,
+            restaurant: true,
         },
     });
 
@@ -77,6 +72,10 @@ router.get("/:id", async (req, res) => {
     const order = await prisma.order.findUnique({
         where: {
             id,
+        },
+        include: {
+            table: true,
+            restaurant: true,
         },
     });
 
