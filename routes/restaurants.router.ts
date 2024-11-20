@@ -14,6 +14,9 @@ router.get("/:id", async (req, res) => {
         where: {
             id,
         },
+        include: {
+            Table: true,
+        },
     });
 
     if (!restaurant) {
