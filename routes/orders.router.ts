@@ -44,11 +44,8 @@ router.get("/restaurant/:restaurantId", async (req, res) => {
                 },
             },
             include: {
-                table: {
-                    include: {
-                        restaurant: true,
-                    },
-                },
+                table: true,
+                restaurant: true,
             },
         });
 
