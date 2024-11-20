@@ -40,7 +40,7 @@ router.get("/restaurant/:restaurantId", async (req, res) => {
         const orders = await prisma.order.findMany({
             where: {
                 table: {
-                    restaurantId: restaurantId, 
+                    restaurantId: restaurantId,
                 },
             },
             include: {
@@ -55,7 +55,9 @@ router.get("/restaurant/:restaurantId", async (req, res) => {
         res.json(orders);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "An error occurred while fetching orders." });
+        res.status(500).json({
+            error: "An error occurred while fetching orders.",
+        });
     }
 });
 
@@ -123,7 +125,7 @@ router.put("/:orderId/status", async (req, res): Promise<void> => {
 router.post("/", async (req, res) => {
     const { type, detail, tableId, email } = req.body;
 
-    if(!type || !detail || !tableId || !email ){
+    if (!type || !detail || !tableId || !email) {
         res.status(400).json({ error: "Some required parameters are missing" });
         return;
     }
@@ -133,26 +135,34 @@ router.post("/", async (req, res) => {
     }
 
     try {
-        const order = await prisma.order.create({
-            data: {
-                // number is autoincremented
-                type,
-                detail,
-                // status is 0 by default
-                table: {
-                    connect: {
-                        id: tableId,
-                    },
+        let table;
+
+        if (type === "DineIn") {
+            table = {
+                connect: {
+                    id: tableId,
                 },
-                email,
-            },
+            };
+        }
+
+        const orderData = {
+            // number is autoincremented
+            type,
+            detail,
+            // status is 0 by default
+            email,
+            table,
+        };
+
+        const order = await prisma.order.create({
+            data: orderData,
         });
 
         sendEmail(
             order.email,
             // TODO: agregar el nombre del restaurant
             `Hiciste un pedido en {nombre del restaurant} por VerLaCarta!`,
-            `${order.type === "DineIn" ? `Mesa #${order.number}` : 'Pedido para retirar'}, tu pedido está pendiente de confirmación`,
+            `${order.type === "DineIn" ? `Mesa #${order.number}` : "Pedido para retirar"}, tu pedido está pendiente de confirmación`,
         );
 
         res.json(order);
@@ -162,6 +172,5 @@ router.post("/", async (req, res) => {
         return;
     }
 });
-
 
 export default router;
