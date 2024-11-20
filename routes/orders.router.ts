@@ -121,9 +121,7 @@ router.put("/:orderId/status", async (req, res): Promise<void> => {
 });
 
 router.post("/", async (req, res) => {
-    const { number, type, detail, tableId, email } = req.body;
-
-    console.log(req.body)
+    const { type, detail, tableId, email } = req.body;
 
     if(!type || !detail || !tableId || !email ){
         res.status(400).json({ error: "Some required parameters are missing" });
@@ -137,10 +135,10 @@ router.post("/", async (req, res) => {
     try {
         const order = await prisma.order.create({
             data: {
-                number,
+                // number is autoincremented
                 type,
                 detail,
-                status: "Pendiente",
+                // status is 0 by default
                 table: {
                     connect: {
                         id: tableId,
@@ -149,6 +147,13 @@ router.post("/", async (req, res) => {
                 email,
             },
         });
+
+        sendEmail(
+            order.email,
+            // TODO: agregar el nombre del restaurant
+            `Hiciste un pedido en {nombre del restaurant} por VerLaCarta!`,
+            `${order.type === "DineIn" ? `Mesa #${order.number}` : 'Pedido para retirar'}, tu pedido está pendiente de confirmación`,
+        );
 
         res.json(order);
     } catch (error) {

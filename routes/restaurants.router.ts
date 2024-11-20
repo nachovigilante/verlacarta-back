@@ -27,13 +27,14 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req: Request, res: Response): Promise<void> => {
     console.log(req);
     try {
-        const { name, password, location, menu, tables, logo, lat, lng } = req.body;
+        const { name, password, location, menu, tables, logo, banner, lat, lng } = req.body;
         if (
             !name ||
             !password ||
             !location ||
             !logo ||
             !menu ||
+            !banner ||
             typeof tables !== "number" ||
             typeof lat !== "number" ||
             typeof lng !== "number" ||
@@ -50,6 +51,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
                     password,
                     location,
                     logo,
+                    banner,
                     menu,
                     lat: lat, 
                     lng: lng, 
@@ -68,7 +70,6 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
             const createdTables = await prisma.table.findMany({
                 where: { restaurantId: restaurant.id },
             });
-            
 
             return [restaurant];
         });
