@@ -34,7 +34,17 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req: Request, res: Response): Promise<void> => {
     console.log(req);
     try {
-        const { name, password, location, menu, tables, logo, banner, lat, lng } = req.body;
+        const {
+            name,
+            password,
+            location,
+            menu,
+            tables,
+            logo,
+            banner,
+            lat,
+            lng,
+        } = req.body;
         if (
             !name ||
             !password ||
@@ -47,39 +57,44 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
             typeof lng !== "number" ||
             tables < 1
         ) {
-            res.status(400).json({ error: "Invalid input data"});
+            res.status(400).json({ error: "Invalid input data" });
             return;
         }
 
-        const [createdRestaurant] = await prisma.$transaction(async (prisma) => {
-            const restaurant = await prisma.restaurant.create({
-                data: {
-                    name,
-                    password,
-                    location,
-                    logo,
-                    banner,
-                    menu,
-                    lat: lat, 
-                    lng: lng, 
-                },
-            });
+        const [createdRestaurant] = await prisma.$transaction(
+            async (prisma) => {
+                const restaurant = await prisma.restaurant.create({
+                    data: {
+                        name,
+                        password,
+                        location,
+                        logo,
+                        banner,
+                        menu,
+                        lat: lat,
+                        lng: lng,
+                    },
+                });
 
-            const tableData = Array.from({ length: tables }, (_, index) => ({
-                number: index + 1,
-                restaurantId: restaurant.id,
-            }));
+                const tableData = Array.from(
+                    { length: tables },
+                    (_, index) => ({
+                        number: index + 1,
+                        restaurantId: restaurant.id,
+                    }),
+                );
 
-            await prisma.table.createMany({
-                data: tableData,
-            });
+                await prisma.table.createMany({
+                    data: tableData,
+                });
 
-            const createdTables = await prisma.table.findMany({
-                where: { restaurantId: restaurant.id },
-            });
+                const createdTables = await prisma.table.findMany({
+                    where: { restaurantId: restaurant.id },
+                });
 
-            return [restaurant];
-        });
+                return [restaurant];
+            },
+        );
         res.status(201).json({
             message: "Restaurant and tables created successfully",
             restaurant: createdRestaurant,
@@ -102,6 +117,9 @@ router.post("/signin", async (req: Request, res: Response) => {
 
         const restaurant = await prisma.restaurant.findFirst({
             where: { name },
+            include: {
+                Table: true,
+            },
         });
 
         if (!restaurant) {
