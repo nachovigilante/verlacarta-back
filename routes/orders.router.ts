@@ -123,9 +123,9 @@ router.put("/:orderId/status", async (req, res): Promise<void> => {
 });
 
 router.post("/", async (req, res) => {
-    const { type, detail, tableId, email } = req.body;
+    const { type, detail, tableId, email, restaurantId } = req.body;
 
-    if (!type || !detail || !email) {
+    if (!type || !detail || !email || !restaurantId) {
         res.status(400).json({ error: "Some required parameters are missing" });
         return;
     }
@@ -134,7 +134,9 @@ router.post("/", async (req, res) => {
         return;
     }
     if (type === "DineIn" && !tableId) {
-        res.status(400).json({ error: "Table ID is required for DineIn orders" });
+        res.status(400).json({
+            error: "Table ID is required for DineIn orders",
+        });
         return;
     }
 
@@ -156,6 +158,11 @@ router.post("/", async (req, res) => {
             // status is 0 by default
             email,
             table,
+            restaurant: {
+                connect: {
+                    id: restaurantId,
+                },
+            },
         };
 
         const order = await prisma.order.create({
