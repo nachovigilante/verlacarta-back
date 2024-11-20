@@ -125,12 +125,16 @@ router.put("/:orderId/status", async (req, res): Promise<void> => {
 router.post("/", async (req, res) => {
     const { type, detail, tableId, email } = req.body;
 
-    if (!type || !detail || !tableId || !email) {
+    if (!type || !detail || !email) {
         res.status(400).json({ error: "Some required parameters are missing" });
         return;
     }
     if (type !== "PickUp" && type !== "DineIn") {
         res.status(400).json({ error: "Wrong order type" });
+        return;
+    }
+    if (type === "DineIn" && !tableId) {
+        res.status(400).json({ error: "Table ID is required for DineIn orders" });
         return;
     }
 
