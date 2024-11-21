@@ -1,38 +1,8 @@
 import { Router } from "express";
 import { prisma } from "../db.js";
-import { SentMessageInfo } from "nodemailer";
-import { log } from "console";
-import nodemailer from "nodemailer";
+import { sendEmail } from "../utils/email.js";
 
 const router = Router();
-
-const transporter = nodemailer.createTransport({
-    service: "gmail", // Usar el servicio de Gmail
-    auth: {
-        user: process.env.EMAIL_USER, // Correo electrónico del remitente
-        pass: process.env.EMAIL_PASS, // Contraseña del remitente
-    },
-});
-
-const sendEmail = (to: string, subject: string, text: string) => {
-    const mailOptions = {
-        from: process.env.EMAIL_USER, // Dirección del remitente
-        to: to,
-        subject: subject,
-        text: text,
-    };
-
-    transporter.sendMail(
-        mailOptions,
-        (error: Error | null, info: SentMessageInfo) => {
-            if (error) {
-                console.error("Error sending email:", error);
-            } else {
-                console.log("Email sent: " + info.response);
-            }
-        },
-    );
-};
 
 router.get("/restaurant/:restaurantId", async (req, res) => {
     const { restaurantId } = req.params;
