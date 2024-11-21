@@ -70,14 +70,20 @@ router.put("/:orderId/status", async (req, res): Promise<void> => {
                 status: status,
             },
         });
+        let statusS = "entregado"
+        if (updatedOrder.status == 1) {
+            statusS = "aceptado"
+        }else if (updatedOrder.status == 2) {
+            statusS = "listo"
+        }
 
         sendEmail(
             updatedOrder.email,
-            "Tu pedido ahora está " + updatedOrder.status + "!",
+            "Tu pedido ahora está " + statusS + "!",
             "Pedido #" +
                 updatedOrder.number +
                 ", tu pedido está " +
-                updatedOrder.status,
+                statusS,
         );
         res.status(200).json(updatedOrder);
         return;
