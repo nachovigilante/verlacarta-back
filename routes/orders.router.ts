@@ -13,6 +13,7 @@ const transporter = nodemailer.createTransport({
         user: process.env.EMAIL_USER, // Correo electrónico del remitente
         pass: process.env.EMAIL_PASS, // Contraseña del remitente
     },
+    secure: true,
 });
 
 const sendEmail = (to: string, subject: string, text: string) => {

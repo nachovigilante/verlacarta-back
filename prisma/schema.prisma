@@ -17,6 +17,10 @@ model Restaurant {
   menu      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  lat       Float    @default(0)
+  lng       Float    @default(0)
+  banner    String   @default("https://via.placeholder.com/150")
+  Order     Order[]
   Table     Table[]
 }
 
@@ -31,16 +35,18 @@ model Table {
 }
 
 model Order {
-  id        String    @id @default(cuid())
-  number    Int
-  type      OrderType
-  detail    String
-  status    String
-  tableId   String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  email     String
-  table     Table?    @relation(fields: [tableId], references: [id])
+  id           String     @id @default(cuid())
+  number       Int        @default(autoincrement())
+  type         OrderType
+  detail       String
+  tableId      String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  email        String
+  status       Int        @default(0)
+  restaurantId String
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  table        Table?     @relation(fields: [tableId], references: [id])
 }
 
 enum OrderType {
