@@ -73,10 +73,10 @@ router.put("/:orderId/status", async (req, res): Promise<void> => {
 
         sendEmail(
             updatedOrder.email,
-            "Tu pedido ahora esta " + updatedOrder.status + "!",
-            "Mesa #" +
+            "Tu pedido ahora está " + updatedOrder.status + "!",
+            "Pedido #" +
                 updatedOrder.number +
-                ", tu pedido esta " +
+                ", tu pedido está " +
                 updatedOrder.status,
         );
         res.status(200).json(updatedOrder);
@@ -137,9 +137,8 @@ router.post("/", async (req, res) => {
 
         sendEmail(
             order.email,
-            // TODO: agregar el nombre del restaurant
-            `Hiciste un pedido en {nombre del restaurant} por VerLaCarta!`,
-            `${order.type === "DineIn" ? `Mesa #${order.number}` : "Pedido para retirar"}, tu pedido está pendiente de confirmación`,
+            `Hiciste un pedido por VerLaCarta!`,
+            `Pedido #${order.number}, tu pedido está pendiente de confirmación`,
         );
 
         res.json(order);
